@@ -48,7 +48,7 @@ def runTestsWithNode(String version) {
         nvm install ${version}
         nvm use ${version}
 
-        echo "🔧 Ejecutando tests en Node.js v${version}"
+        echo "🔧 Ejecutando tests enn Node.js v${version}"
         npm install
         npm test
     """
