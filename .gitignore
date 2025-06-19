@@ -42,4 +42,5 @@ build/
 # Optional: yarn cache folder
 .yarn/
 
+node_modules/
 
