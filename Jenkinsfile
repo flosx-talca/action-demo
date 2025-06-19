@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         NVM_DIR = "${HOME}/.nvm"
-        NODE_VERSION = "18"
     }
 
     stages {
@@ -13,21 +12,44 @@ pipeline {
             }
         }
 
-        stage('Configurar Node y ejecutar tests') {
-            steps {
-                script {
-                    sh """
-                        export NVM_DIR="\$HOME/.nvm"
-                        [ -s "\$NVM_DIR/nvm.sh" ] && . "\$NVM_DIR/nvm.sh"
-
-                        nvm install ${NODE_VERSION}
-                        nvm use ${NODE_VERSION}
-
-                        npm install
-                        npm test
-                    """
+        stage('Test paralelos Node.js') {
+            parallel {
+                stage('Node 18') {
+                    steps {
+                        script {
+                            runTestsWithNode('18')
+                        }
+                    }
+                }
+                stage('Node 20') {
+                    steps {
+                        script {
+                            runTestsWithNode('20')
+                        }
+                    }
+                }
+                stage('Node 22') {
+                    steps {
+                        script {
+                            runTestsWithNode('22')
+                        }
+                    }
                 }
             }
         }
     }
+}
+
+def runTestsWithNode(String version) {
+    sh """
+        export NVM_DIR="\$HOME/.nvm"
+        [ -s "\$NVM_DIR/nvm.sh" ] && . "\$NVM_DIR/nvm.sh"
+
+        nvm install ${version}
+        nvm use ${version}
+
+        echo "🔧 Ejecutando tests en Node.js v${version}"
+        npm install
+        npm test
+    """
 }
