@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [16.x, 18.x]
+        node: [18.x, 20.x, 22.x] # Versiones de Node.js a probar
 
     steps:
       - name: Checkout del código
