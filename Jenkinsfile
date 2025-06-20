@@ -1,55 +1,39 @@
 pipeline {
-    agent any
+  agent any
 
-    environment {
-        NVM_DIR = "${HOME}/.nvm"
+  environment {
+    NODE_ENV = 'development'
+  }
+
+  stages {
+    stage('Verificar versión de Node y npm') {
+      steps {
+        sh '''
+          echo "Node version:"
+          node -v
+
+          echo "npm version:"
+          npm -v
+        '''
+      }
     }
 
-    stages {
-        stage('Checkout codigo') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Test paralelos Node.js') {
-            parallel {
-                stage('Node 18') {
-                    steps {
-                        script {
-                            runTestsWithNode('18')
-                        }
-                    }
-                }
-                stage('Node 20') {
-                    steps {
-                        script {
-                            runTestsWithNode('20')
-                        }
-                    }
-                }
-                stage('Node 22') {
-                    steps {
-                        script {
-                            runTestsWithNode('22')
-                        }
-                    }
-                }
-            }
-        }
+    stage('Instalación de dependencias') {
+      steps {
+        sh 'npm ci || npm install'
+      }
     }
-}
 
-def runTestsWithNode(String version) {
-    sh """
-        export NVM_DIR="\$HOME/.nvm"
-        [ -s "\$NVM_DIR/nvm.sh" ] && . "\$NVM_DIR/nvm.sh"
+    stage('Ejecución de tests') {
+      steps {
+        sh 'npm test'
+      }
+    }
 
-        nvm install ${version}
-        nvm use ${version}
-
-        echo "🔧 Ejecutando test en Node.gjs v${version}"
-        npm install
-        npm test
-    """
+    stage('Final') {
+      steps {
+        echo 'Pipeline Node.js finalizado correctamente.'
+      }
+    }
+  }
 }
