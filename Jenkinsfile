@@ -1,55 +1,34 @@
 pipeline {
-    agent any
-
-    environment {
-        NVM_DIR = "${HOME}/.nvm"
-    }
+    agent none
 
     stages {
-        stage('Checkout codigo') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Test paralelos Node.js') {
             parallel {
                 stage('Node 18') {
+                    agent {
+                        docker { image 'node:18' }
+                    }
                     steps {
-                        script {
-                            runTestsWithNode('18')
-                        }
+                        sh 'node -v && npm install && npm test'
                     }
                 }
                 stage('Node 20') {
+                    agent {
+                        docker { image 'node:20' }
+                    }
                     steps {
-                        script {
-                            runTestsWithNode('20')
-                        }
+                        sh 'node -v && npm install && npm test'
                     }
                 }
                 stage('Node 22') {
+                    agent {
+                        docker { image 'node:22' }
+                    }
                     steps {
-                        script {
-                            runTestsWithNode('22')
-                        }
+                        sh 'node -v && npm install && npm test'
                     }
                 }
             }
         }
     }
-}
-
-def runTestsWithNode(String version) {
-    sh """
-        export NVM_DIR="\$HOME/.nvm"
-        [ -s "\$NVM_DIR/nvm.sh" ] && . "\$NVM_DIR/nvm.sh"
-
-        nvm install ${version}
-        nvm use ${version}
-
-        echo "🔧 Ejecutando test en Node.gjs v${version}"
-        npm install
-        npm test
-    """
 }
