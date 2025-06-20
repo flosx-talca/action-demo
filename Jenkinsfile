@@ -6,40 +6,13 @@ pipeline {
     }
 
     stages {
-        stage('Validar rama') {
-            when {
-                not {
-                    anyOf {
-                        branch 'main'
-                        branch 'ci'
-                    }
-                }
-            }
-            steps {
-                echo "⛔ Este pipeline solo se ejecuta en las ramas main o ci. Rama actual: ${env.BRANCH_NAME}"
-                error("Abortado: Rama no permitida")
-            }
-        }
-
         stage('Checkout código') {
-            when {
-                anyOf {
-                    branch 'main'
-                    branch 'ci'
-                }
-            }
             steps {
                 checkout scm
             }
         }
 
         stage('Test paralelos Node.js') {
-            when {
-                anyOf {
-                    branch 'main'
-                    branch 'ci'
-                }
-            }
             parallel {
                 stage('Node 18') {
                     steps {
@@ -75,7 +48,7 @@ def runTestsWithNode(String version) {
         nvm install ${version}
         nvm use ${version}
 
-        echo "🔧 Ejecutando test en Node.js v${version}"
+        echo "🔧 Ejecutando test en Node.gjs v${version}"
         npm install
         npm test
     """
