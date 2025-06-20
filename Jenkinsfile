@@ -6,6 +6,14 @@ pipeline {
     }
 
     stages {
+        stage('Run only on main or ci') {
+            when {
+                anyOf {
+                    branch 'main'
+                    branch 'ci'
+                }
+            }
+        }
         stage('Checkout código') {
             steps {
                 checkout scm
