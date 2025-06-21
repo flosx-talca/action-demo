@@ -8,40 +8,47 @@ pipeline {
             }
         }
 
-        stage('Verificar estructura real') {
+        stage('Verificar estructura') {
             steps {
                 sh '''
-                    echo "📂 Contenido del WORKSPAdCE:"
+                    echo "📂 Contenido actual:"
                     ls -la
                 '''
             }
         }
 
-        stage('Preparar carpeta app') {
-            steps {
-                sh '''
-                    echo "📦 Creando carpeta app/"
-                    mkdir -p app
-
-                    echo "📄 Copiando archivos..."
-                    cp -v package.json package-lock.json app/ || true
-                    cp -vr src tests app/
-
-                    echo "📂 Contenido dentro de app/:"
-                    ls -la app
-                '''
-            }
-        }
-
-        stage('Test en Node 18') {
-            steps {
-                sh '''
-                    echo "🚀 Ejecutando tests en contenedor Node 18"
-                    docker run --rm \
-                        -v "$WORKSPACE/app":/app \
-                        -w /app \
-                        node:18 bash -c "ls -la && npm install && npm test"
-                '''
+        stage('Test en paralelo') {
+            parallel {
+                stage('Node 18') {
+                    steps {
+                        sh '''
+                            docker run --rm \
+                                -v "$WORKSPACE":/app \
+                                -w /app \
+                                node:18 bash -c "npm install && npm test"
+                        '''
+                    }
+                }
+                stage('Node 20') {
+                    steps {
+                        sh '''
+                            docker run --rm \
+                                -v "$WORKSPACE":/app \
+                                -w /app \
+                                node:20 bash -c "npm install && npm test"
+                        '''
+                    }
+                }
+                stage('Node 22') {
+                    steps {
+                        sh '''
+                            docker run --rm \
+                                -v "$WORKSPACE":/app \
+                                -w /app \
+                                node:22 bash -c "npm install && npm test"
+                        '''
+                    }
+                }
             }
         }
     }
