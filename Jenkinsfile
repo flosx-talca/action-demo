@@ -13,7 +13,8 @@ pipeline {
                 stage('Node 18') {
                     steps {
                         sh '''
-                            docker run --rm -v "$WORKSPACE/action-demo":/app -w /app node:18 bash -c "
+                            docker run --rm -v "$WORKSPACE":/app -w /app node:18 bash -c "
+                                ls -la /app &&
                                 npm install &&
                                 npm test
                             "
@@ -23,7 +24,8 @@ pipeline {
                 stage('Node 20') {
                     steps {
                         sh '''
-                            docker run --rm -v "$WORKSPACE/action-demo":/app -w /app node:20 bash -c "
+                            docker run --rm -v "$WORKSPACE":/app -w /app node:20 bash -c "
+                                ls -la /app &&
                                 npm install &&
                                 npm test
                             "
@@ -33,7 +35,8 @@ pipeline {
                 stage('Node 22') {
                     steps {
                         sh '''
-                            docker run --rm -v "$WORKSPACE/action-demo":/app -w /app node:22 bash -c "
+                            docker run --rm -v "$WORKSPACE":/app -w /app node:22 bash -c "
+                                ls -la /app &&
                                 npm install &&
                                 npm test
                             "
