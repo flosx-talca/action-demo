@@ -7,10 +7,13 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Test con Docker Node 18') {
+        stage('Test con Node 22') {
             steps {
                 sh '''
-                    docker run --rm -v "$WORKSPACE":/app -w /app node:18 bash -c "npm install && npm test"
+                    docker run --rm \
+                        -v "$WORKSPACE":/app \
+                        -w /app \
+                        node:22 bash -c "ls -la && npm install && npm test"
                 '''
             }
         }
