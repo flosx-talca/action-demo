@@ -8,13 +8,13 @@ pipeline {
             }
         }
 
-        stage('Verificar estructura en host') {
+        stage('Verificar estructura') {
             steps {
                 sh '''
                     echo "📁 Listado desde Jenkins:"
-                    ls -la /var/jenkins_home/workspace/app-node
+                    ls -la $WORKSPACE
                     echo "📝 Mostrando package.json:"
-                    cat /var/jenkins_home/workspace/app-node/package.json || echo "❌ No encontrado"
+                    cat $WORKSPACE/package.json
                 '''
             }
         }
@@ -24,43 +24,35 @@ pipeline {
                 stage('Node 18') {
                     steps {
                         sh '''
-                            echo "🚀 Ejecutando tests en Node 18..."
+                            echo "🚀 Test con Node 18"
                             docker run --rm \
-                                -v /var/jenkins_home/workspace/app-node:/app \
+                                -v "$WORKSPACE":/app \
                                 -w /app \
-                                node:18 bash -c "
-                                    echo '📁 Archivos dentro del contenedor:';
-                                    ls -la /app;
-                                    echo '📝 Mostrando package.json:';
-                                    cat /app/package.json || echo '❌ No encontrado';
-                                    npm install && npm test
-                                "
+                                node:18 bash -c "npm install && npm test"
                         '''
                     }
                 }
+
                 stage('Node 20') {
                     steps {
                         sh '''
-                            echo "🚀 Ejecutando tests en Node 20..."
+                            echo "🚀 Test con Node 20"
                             docker run --rm \
-                                -v /var/jenkins_home/workspace/app-node:/app \
+                                -v "$WORKSPACE":/app \
                                 -w /app \
-                                node:20 bash -c "
-                                    npm install && npm test
-                                "
+                                node:20 bash -c "npm install && npm test"
                         '''
                     }
                 }
+
                 stage('Node 22') {
                     steps {
                         sh '''
-                            echo "🚀 Ejecutando tests en Node 22..."
+                            echo "🚀 Test con Node 22"
                             docker run --rm \
-                                -v /var/jenkins_home/workspace/app-node:/app \
+                                -v "$WORKSPACE":/app \
                                 -w /app \
-                                node:22 bash -c "
-                                    npm install && npm test
-                                "
+                                node:22 bash -c "npm install && npm test"
                         '''
                     }
                 }
