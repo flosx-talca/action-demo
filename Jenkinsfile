@@ -2,47 +2,41 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout código') {
+        stage('Checkout') {
             steps {
                 checkout scm
             }
         }
 
-        stage('Test paralelos Node.js') {
+        stage('Test en paralelo') {
             parallel {
                 stage('Node 18') {
-                    agent {
-                        docker { image 'node:18' }
-                    }
                     steps {
                         sh '''
-                            echo "🔧 Test con Node 18"
-                            npm install
-                            npm test
+                            docker run --rm -v "$PWD":/app -w /app node:18 bash -c "
+                                npm install &&
+                                npm test
+                            "
                         '''
                     }
                 }
                 stage('Node 20') {
-                    agent {
-                        docker { image 'node:20' }
-                    }
                     steps {
                         sh '''
-                            echo "🔧 Test con Node 20"
-                            npm install
-                            npm test
+                            docker run --rm -v "$PWD":/app -w /app node:20 bash -c "
+                                npm install &&
+                                npm test
+                            "
                         '''
                     }
                 }
                 stage('Node 22') {
-                    agent {
-                        docker { image 'node:22' }
-                    }
                     steps {
                         sh '''
-                            echo "🔧 Test con Node 22"
-                            npm install
-                            npm test
+                            docker run --rm -v "$PWD":/app -w /app node:22 bash -c "
+                                npm install &&
+                                npm test
+                            "
                         '''
                     }
                 }
