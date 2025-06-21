@@ -10,23 +10,6 @@ pipeline {
             }
         }
 
-        stage('Verificar estructura') {
-            steps {
-                sh '''
-                    echo "Listado de archivos en workspace:"
-                    ls -la $WORKSPACE
-                    echo "Contenido detallado:"
-                    ls -laR $WORKSPACE
-                    echo "Contenido de package.json (si existe):"
-                    if [ -f $WORKSPACE/package.json ]; then
-                        cat $WORKSPACE/package.json
-                    else
-                        echo "package.json no encontrado"
-                    fi
-                '''
-            }
-        }
-
         stage('Tests en paralelo') {
             parallel {
                 stage('Node 18') {
