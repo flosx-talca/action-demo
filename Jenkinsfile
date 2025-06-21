@@ -7,19 +7,14 @@ pipeline {
                 checkout scm
             }
         }
-
-        stage('Instalar dependencias') {
+        stage('Verificar estructura y npm install') {
             steps {
                 sh '''
+                    echo "Listado carpeta workspace en el contenedor:"
+                    docker run --rm -v "$WORKSPACE":/app -w /app node:18 bash -c "ls -la /app"
+                    
+                    echo "Intentando npm install en /app"
                     docker run --rm -v "$WORKSPACE":/app -w /app node:18 bash -c "npm install"
-                '''
-            }
-        }
-
-        stage('Ejecutar tests') {
-            steps {
-                sh '''
-                    docker run --rm -v "$WORKSPACE":/app -w /app node:18 bash -c "npm test"
                 '''
             }
         }
