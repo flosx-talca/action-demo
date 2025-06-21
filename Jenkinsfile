@@ -11,7 +11,7 @@ pipeline {
         stage('Verificar estructura real') {
             steps {
                 sh '''
-                    echo "📂 Contenido del WORKSPACE:"
+                    echo "📂 Contenido del WORKSPAdCE:"
                     ls -la
                 '''
             }
