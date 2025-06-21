@@ -1,19 +1,48 @@
-stage('Preparar carpeta app') {
-    steps {
-        sh '''
-            echo "📁 Contenido antes de copiar:"
-            ls -la
+pipeline {
+    agent any
 
-            echo "📂 Creando carpeta app/"
-            mkdir -p app
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
 
-            echo "📄 Copiando archivos al interior de app/"
-            cp -v package.json package-lock.json app/ || true
-            cp -vr src app/
-            cp -vr tests app/
+        stage('Verificar estructura real') {
+            steps {
+                sh '''
+                    echo "📂 Contenido del WORKSPACE:"
+                    ls -la
+                '''
+            }
+        }
 
-            echo "📁 Contenido dentro de app/:"
-            ls -la app
-        '''
+        stage('Preparar carpeta app') {
+            steps {
+                sh '''
+                    echo "📦 Creando carpeta app/"
+                    mkdir -p app
+
+                    echo "📄 Copiando archivos..."
+                    cp -v package.json package-lock.json app/ || true
+                    cp -vr src tests app/
+
+                    echo "📂 Contenido dentro de app/:"
+                    ls -la app
+                '''
+            }
+        }
+
+        stage('Test en Node 18') {
+            steps {
+                sh '''
+                    echo "🚀 Ejecutando tests en contenedor Node 18"
+                    docker run --rm \
+                        -v "$WORKSPACE/app":/app \
+                        -w /app \
+                        node:18 bash -c "ls -la && npm install && npm test"
+                '''
+            }
+        }
     }
 }
