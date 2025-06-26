@@ -11,14 +11,15 @@ pipeline {
                     }
                 }
 
+                agent {
+                    docker {
+                        image "node:${NODE_VERSION}"
+                        args '-v /tmp:/tmp'
+                    }
+                }
+
                 stages {
                     stage('Instalar dependencias') {
-                        agent {
-                            docker {
-                                image "node:${NODE_VERSION}"
-                                args '-v /tmp:/tmp'
-                            }
-                        }
                         steps {
                             echo "📦 Instalando dependencias en Node.js ${NODE_VERSION}"
                             sh 'npm ci'
@@ -36,5 +37,3 @@ pipeline {
         }
     }
 }
-
-
