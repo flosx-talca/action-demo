@@ -1,37 +1,21 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'node:18'
+            args '-v /tmp:/tmp'
+        }
+    }
 
     stages {
-        stage('Verificar estructura') {
-            steps {
-                echo '📂 Explorando estructura del workspace'
-                sh 'find . -type f'
-            }
-        }
-
         stage('Instalar dependencias') {
             steps {
-                echo '📦 Ejecutando npm ci en la raíz'
-                sh '''
-                    docker run --rm \
-                        -v "$(pwd):/app" \
-                        -w /app \
-                        node:18 \
-                        bash -c "npm ci"
-                '''
+                sh 'npm ci'
             }
         }
 
         stage('Test') {
             steps {
-                echo '🧪 Ejecutando pruebas'
-                sh '''
-                    docker run --rm \
-                        -v "$(pwd):/app" \
-                        -w /app \
-                        node:18 \
-                        bash -c "npm test"
-                '''
+                sh 'npm test'
             }
         }
     }
