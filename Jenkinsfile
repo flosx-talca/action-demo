@@ -14,7 +14,7 @@ pipeline {
                 echo '📦 Ejecutando npm ci en la raíz'
                 sh '''
                     docker run --rm \
-                        -v "$WORKSPACE:/app" \
+                        -v "$(pwd):/app" \
                         -w /app \
                         node:18 \
                         bash -c "npm ci"
@@ -27,7 +27,7 @@ pipeline {
                 echo '🧪 Ejecutando pruebas'
                 sh '''
                     docker run --rm \
-                        -v "$WORKSPACE:/app" \
+                        -v "$(pwd):/app" \
                         -w /app \
                         node:18 \
                         bash -c "npm test"
