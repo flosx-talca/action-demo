@@ -1,20 +1,34 @@
 pipeline {
-  agent any
-  stages {
-    stage('Checkout') {
-      steps {
-        checkout scm
-      }
+    agent any
+
+    stages {
+        stage('Clonar') {
+            steps {
+                git 'https://github.com/flosx-talca/action-demo'
+            }
+        }
+
+        stage('Listar archivos') {
+            steps {
+                sh 'ls -la'
+                sh 'ls -la app/'
+            }
+        }
+
+        stage('Instalar dependencias') {
+            steps {
+                sh '''
+                docker run --rm -v $(pwd):/app -w /app/app node:18 bash -c "npm ci"
+                '''
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh '''
+                docker run --rm -v $(pwd):/app -w /app/app node:18 bash -c "npm test"
+                '''
+            }
+        }
     }
-    stage('npm install') {
-      steps {
-        sh '''
-          echo "Listado carpeta app-node en contenedor:"
-          docker run --rm -v "$WORKSPACE":/app -w /app node:18 bash -c "ls -la /app"
-          echo "Ejecutando npm install"
-          docker run --rm -v "$WORKSPACE":/app -w /app node:18 bash -c "npm install"
-        '''
-      }
-    }
-  }
 }
