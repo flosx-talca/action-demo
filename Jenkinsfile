@@ -2,12 +2,10 @@ pipeline {
     agent any
 
     stages {
-        stage('Listar archivos') {
+        stage('Verificar estructura') {
             steps {
-                echo '📁 Mostrando contenido del workspace raíz'
-                sh 'ls -la'
-                echo '📁 Mostrando contenido de la carpeta app'
-                sh 'ls -la app/'
+                echo '📂 Explorando estructura completa del workspace'
+                sh 'find . -type f'
             }
         }
 
@@ -16,7 +14,7 @@ pipeline {
                 echo '📦 Ejecutando npm ci en la carpeta app/'
                 sh '''
                     docker run --rm \
-                        -v $(pwd):/app \
+                        -v "$WORKSPACE:/app" \
                         -w /app/app \
                         node:18 \
                         bash -c "npm ci"
@@ -29,7 +27,7 @@ pipeline {
                 echo '🧪 Ejecutando pruebas'
                 sh '''
                     docker run --rm \
-                        -v $(pwd):/app \
+                        -v "$WORKSPACE:/app" \
                         -w /app/app \
                         node:18 \
                         bash -c "npm test"
