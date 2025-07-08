@@ -21,7 +21,7 @@ pipeline {
                 stages {
                     stage('Instalar dependencias') {
                         steps {
-                            echo "📦 Instalando dependencias en Node.js ${NODE_VERSION}"
+                            echo "📦  Instalando dependencias en Node.js ${NODE_VERSION}"
                             sh 'npm ci'
                         }
                     }
