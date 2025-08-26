@@ -2,7 +2,7 @@ pipeline {
     agent none
 
     stages {
-        stage('Test en múltiples versiones de Node.js') {
+        stage('Test en múltip les versiones de Node.js') {
             matrix {
                 axes {
                     axis {
