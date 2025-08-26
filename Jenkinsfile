@@ -19,9 +19,17 @@ pipeline {
                 }
 
                 stages {
+                    stage('Preparar workspace') {
+                        steps {
+                            echo "🧹 Limpiando workspace y clonando repo en Node.js ${NODE_VERSION}"
+                            deleteDir()
+                            git url: 'https://github.com/flosx-talca/action-demo', branch: 'main'
+                        }
+                    }
+
                     stage('Instalar dependencias') {
                         steps {
-                            echo "📦  Instalando dependencias en Node.js prueba  hoy ${NODE_VERSION}"
+                            echo "📦 Instalando dependencias en Node.js ${NODE_VERSION}"
                             sh 'npm ci'
                         }
                     }
